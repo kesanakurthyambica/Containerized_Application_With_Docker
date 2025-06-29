@@ -1,0 +1,105 @@
+Create a Dockerfile to define and build the customized docker image:
+
+touch Dockerfile
+
+The above command will create an empty Dockerfile.
+
+Open the Dockerfile in the vim editor
+
+vim Dockerfile
+
+and paste in (Control+Shift+V) the following content
+
+#1: Use the official NGINX image as the base
+
+FROM nginx:latest
+
+#2: Copy the application files into the container
+
+COPY index.html /usr/share/nginx/html/index.html
+
+#3: Expose port 80 to allow access to the NGINX server
+
+EXPOSE 80
+
+#4: Specify the command to run NGINX 
+
+CMD ["nginx", "-g", "daemon off;"]
+
+Note:
+
+Pasting will result in extra newlines. This is okay, and can be ignored for this lab.
+
+The # lines are comments. Read those to understand what the following Dockerfile command means.
+
+In vim, press i to enter INSERT mode, then paste in the above contents use Control+Shift+V
+
+Press esc to exit insert mode.
+
+Save and exit by entering :wq
+
+Create the web page (index.html) on the host machine:
+
+echo "Welcome to My Custom NGINX Server Page Using DockerFile" > index.html
+
+This overwrote the existing index.html file.
+
+Run the following command to build the custom NGINX image using the Dockerfile:
+
+docker build -t nginx_app .
+
+The command builds a Docker image named nginx_app using the Dockerfile in the current directory (.).
+
+Note: Ignore the DEPRECATED message.
+
+Check the new docker image nginx_app:
+
+docker images
+
+A new image named nginx_app is shown in the above output.
+
+Tag the nginx_app image with ver1:
+
+docker tag nginx_app nginx_app:ver1
+
+This command tags the nginx_app image with the version ver1, creating a new tag nginx_app:ver1 for the existing image.
+
+Run the Container Using the Built NGINX Docker Image:
+
+docker run -d --name nginx_container_1 -p 8080:80 nginx_app:ver1
+
+Note:
+
+-p 8080:80 Maps port 8080 on the host to port 80 on the container, allowing access to the container's web server via localhost:8080.
+
+nginx_app:ver1 Specifies the image (nginx_app) with the tag ver1 to create the container.
+
+Verifying the running container:
+
+docker ps
+
+or,
+
+docker container ls
+
+The above output confirms that the container nginx-container-1 is in a running state.
+
+Test the application by accessing the service through the exposed port:
+
+curl http://localhost:8080
+
+The above output confirms that the customized NGINX web server has been successfully created; on the host now, you will get the following returned:
+
+Welcome to My Custom NGINX Server Page Using DockerFile
+
+Now stop and remove the running nginx containers, use the following commands:
+
+docker container stop nginx-container
+
+docker container rm nginx-container
+
+docker container stop nginx_container_1
+
+docker container rm nginx_container_1
+
+Congratulations on successfully completing this challenge! In this challenge, you created and managed a Docker container by starting with a base image, copying application files into the container, and building a customized Docker image using a Dockerfile. You then ran the image in a container with port mapping, allowing you to access the application through HTTP and verify its proper functionality. After completing the testing, you stopped and removed the container, ensuring a clean environment. 
