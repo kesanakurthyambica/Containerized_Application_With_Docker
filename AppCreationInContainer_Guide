@@ -1,0 +1,84 @@
+Create, Run, and Test a Dockerized Application
+In this challenge, you will create and manage a docker container. Starting with a base image, you'll copy application files, build a docker image with a Dockerfile, and run it in a container with port mapping. Afterward, you’ll test the application by accessing it through HTTP, ensuring proper functionality. The challenge will also cover stopping and removing containers once testing is complete.
+
+Once available, click the Open environment button to open the Ubuntu Desktop.
+
+Check the icons at the bottom of the desktop and click on Terminal Emulator to open the CLI Terminal:
+figure
+﻿
+
+First, elevate your privileges from a normal user to a root user:
+
+sudo -i
+
+Verify the available docker image on the local system:
+
+docker image ls
+
+The output above confirms the Docker images available on the local system.
+
+Note: Ignore the mpepping/cyberchef image; that's installed on the base system, and won't be used in this lab.
+
+Check for running containers using the command:
+
+docker container ls
+
+You won't see any running containers since this is a fresh setup.
+
+Now run a Nginx container:
+
+docker run --name nginx-container -d nginx:latest
+
+The above command started a new container named nginx-container in the background.
+
+Note:
+
+docker run Starts a new container.
+
+--name nginx-container Assigns the name nginx-container to the container.
+
+-d Runs the container in detached mode (in the background).
+
+nginx:latest Specifies the nginx image with the latest tag.
+
+Verify the running container by executing the command again:
+
+docker container ls
+
+The output above lists the nginx:latest container, and its STATUS of Up confirms the Nginx Container is successfully running.
+
+Create an application file (index.html) on the Host Machine:
+
+echo "Welcome to My Custom NGINX Server Page" > index.html 
+
+Copy the index.html to the running Nginx container:
+
+docker cp index.html nginx-container:/usr/share/nginx/html/index.html
+
+The command copies the index.html file from the host machine to the /usr/share/nginx/html/ directory inside the nginx-container, replacing the default index.html served by NGINX.
+
+Now to access the Nginx container’s shell:
+
+docker exec -it nginx-container /bin/bash
+
+The command starts an interactive Bash shell inside the running nginx-container, enabling you to execute commands directly in the container's environment.
+
+The output above shows that the prompt has changed, indicating that you are inside the nginx container.
+
+Note:
+
+-it Combines -i (interactive) and -t (pseudo-TTY), which keeps the container session interactive and allocates a terminal.
+
+Access the Nginx web server:
+
+curl http://localhost:80
+
+The output above confirms that the nginx web server has been successfully configured, returning:
+
+Welcome to My Custom NGINX Server Page
+
+Now exit from Nginx container:
+
+exit
+
+This command will return to the host machine's terminal.
